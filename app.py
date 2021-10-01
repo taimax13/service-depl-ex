@@ -1,6 +1,5 @@
-import json
 import redis
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 r = redis.Redis(host='redis', port=6379)
@@ -20,15 +19,16 @@ def response():
     return output.encode()
 
 
-class AddData:
-    def post(self, jsonF):
-        with open(jsonF) as file:
-            jObj = json.load(file)
-            file.close()
-        redis.Redis().mset(jObj)
-
-
-@app.route('/')
+@app.route('/', ['GET'])
 def hello():
     resp = response()
     return ' {} .\n'.format(resp)
+
+
+@app.route("/add", methods=["POST"])
+def add():
+    name = request.form.get("name", "")
+    grade = request.form.get("grade", "")
+    r.mset({name, grade})
+    response = "Student {}! with {} grade. added".format(name, grade)
+    return response
