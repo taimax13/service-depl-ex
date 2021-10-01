@@ -1,0 +1,20 @@
+version: "3.7"
+
+services:
+
+  redis:
+    image: redis
+    volumes:
+      - ./data2:/data2
+    ports:
+      - 6379:6379
+
+  api:
+    container_name: api-container
+    build: .
+    ports:
+      - 5000:5000
+
+  job:
+    container_name: data-inn
+    build: ./app-data
