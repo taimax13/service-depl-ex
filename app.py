@@ -4,7 +4,6 @@ from flask import Flask, request
 app = Flask(__name__)
 r = redis.Redis(host='redis', port=6379)
 
-
 def response():
     stList = r.keys()
     output = ''
@@ -23,6 +22,11 @@ def response():
 def hello():
     resp = response()
     return ' {} .\n'.format(resp)
+
+
+@app.route('/<string:name>/')
+def get_student(name):
+    return str(r.mget(name)[0], "utf-8")
 
 
 @app.route("/add", methods=["POST"])
